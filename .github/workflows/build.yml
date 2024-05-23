@@ -29,7 +29,7 @@ jobs:
           script: |
             docker stop grp2-app-back || true
             docker rm grp2-app-back || true
-            cd /home/ynov/grp2/front
+            cd /home/ynov/grp2/back
             git pull
             docker build -t grp2-app-back .
             docker run -d --name grp2-app-back -p 8081:8081 grp2-app-back
