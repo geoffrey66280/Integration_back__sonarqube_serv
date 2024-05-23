@@ -26,7 +26,7 @@ WORKDIR /app
 COPY --from=builder /app/target/spring-boot-jpa-h2-0.0.1-SNAPSHOT.jar ./app.jar
 
 # Exposer le port sur lequel votre application Spring Boot écoute (par défaut : 8080)
-EXPOSE 8080
+EXPOSE 8081
 
 # Commande pour démarrer votre application Spring Boot lorsque le conteneur démarre
 CMD ["java", "-jar", "app.jar"]
