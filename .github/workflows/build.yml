@@ -32,7 +32,7 @@ jobs:
             cd /home/ynov/grp2/back
             git pull
             docker build -t grp2-app-back .
-            docker run -d --name grp2-app-back -p 8081:8081 grp2-app-back
+            docker run -d --name grp2-app-back -p 8081:8080 grp2-app-back
       # - name: Cache SonarQube packages
       #   uses: actions/cache@v1
       #   with:
