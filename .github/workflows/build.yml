@@ -17,21 +17,37 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-      - name: Cache SonarQube packages
-        uses: actions/cache@v1
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=gservant-ynov-backend -Dsonar.projectName=gservant-ynov-backend
+          debug: true
+          host: 54.39.16.154
+          username: ynov
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            docker stop grp2-app-back || true
+            docker rm grp2-app-back || true
+            cd /home/ynov/grp2/front
+            git pull
+            docker build -t grp2-app-back .
+            docker run -d --name grp2-app-back -p 3000:3000 grp2-app-back
+      # - name: Cache SonarQube packages
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.sonar/cache
+      #     key: ${{ runner.os }}-sonar
+      #     restore-keys: ${{ runner.os }}-sonar
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ~/.m2
+      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: ${{ runner.os }}-m2
+      # - name: Build and analyze
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #   run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=gservant-ynov-backend -Dsonar.projectName=gservant-ynov-backend
